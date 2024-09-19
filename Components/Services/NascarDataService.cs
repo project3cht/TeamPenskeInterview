@@ -13,13 +13,18 @@ public class NascarDataService
     }
 
     public async Task<List<RaceSchedule>> GetRaceSchedulesAsync(string year)
-{
-    var response = await _httpClient.GetAsync($"https://cf.nascar.com/cacher/{year}/race_list_basic.json"); 
-    response.EnsureSuccessStatusCode();
-
-    var jsonResponse = await response.Content.ReadAsStringAsync();
-    return JsonSerializer.Deserialize<List<RaceSchedule>>(jsonResponse);
-}
+    {
+        var response = await _httpClient.GetAsync($"https://cf.nascar.com/cacher/{year}/race_list_basic.json"); 
+        response.EnsureSuccessStatusCode();
+        var jsonResponse = await response.Content.ReadAsStringAsync();
+        //Console.WriteLine(jsonResponse);
+        
+        var json = JsonSerializer.Deserialize<Dictionary<string, List<RaceSchedule>>>(jsonResponse);
+        var RaceSchedules = json["series_1"];
+        return RaceSchedules;
+        // var RaceSchedules = JsonSerializer.Deserialize<List<RaceSchedule>>(jsonResponse);
+        // return RaceSchedules;
+    }
 
 }
 

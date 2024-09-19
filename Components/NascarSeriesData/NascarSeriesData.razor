@@ -23,7 +23,6 @@ add styling within home.razxor and have them comnpile sidebyside*@
 @inject RaceScheduleViewModel ViewModel
 
 @code {
-    [Parameter]
     public string Year { get; set; }
 
     protected override async Task OnParametersSetAsync()
@@ -45,6 +44,7 @@ else
     <table class="table">
         <thead>
             <tr>
+                <th>SeriesID</th>
                 <th>Race Name</th>
                 <th>Date</th>
                 <th>Track</th>
@@ -56,6 +56,7 @@ else
             @foreach (var race in ViewModel.RaceSchedules)
             {
                 <tr>
+                    <td>@race.SeriesId</td>
                     <td>@race.RaceName</td>
                     <td>@race.RaceDate.ToShortDateString()</td>
                     <td>@race.TrackName</td>

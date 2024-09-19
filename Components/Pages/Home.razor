@@ -10,8 +10,8 @@
 @code {
     protected override async Task OnInitializedAsync()
     {
-        //ViewModel takes care of handling exceptions
-        await ViewModel.LoadSchedules(DateTime.Now.Year.ToString());  // Load schedules for the requested year
+        // Load schedules for the requested year
+        await ViewModel.LoadSchedules(DateTime.Now.Year.ToString());  
     }
 }
 
@@ -50,18 +50,7 @@ else
     </table>
 }
 
-@* @code{
-    private RaceDetail[]? races;
-
-<!--TODO: Work -->
-    private class RaceDetail
-    {
-        public DateOnly RaceDate {get; set;}
-        public string Location {get; set;}
-        public string Type {get; set;}
-    }
-} 
-
+@*
 // catch only the exception I am worried about
 // have t heui response in a easy way
 // only catch the exceptions

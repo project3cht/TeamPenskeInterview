@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 
 public class RaceScheduleViewModel : INotifyPropertyChanged
 {
@@ -9,7 +10,10 @@ public class RaceScheduleViewModel : INotifyPropertyChanged
     private List<RaceSchedule> _raceSchedules;
     private string _errorMessage;
     private bool _isLoading;
-
+    public RaceScheduleViewModel(NascarDataService dataService)
+    {
+        _dataService = dataService;
+    }
     public async Task LoadSchedules(string year)
     {
         //exceptions
@@ -17,21 +21,18 @@ public class RaceScheduleViewModel : INotifyPropertyChanged
         {
             IsLoading = true;
             ErrorMessage = null;
-            
-            // Fetch schedules based on the year using the data service
+            // Fetch schedules based on the year using data service
             RaceSchedules = await _dataService.GetRaceSchedulesAsync(year);
         }
         catch (Exception ex)
         {
-            ErrorMessage = $"Failed to load schedules: {ex.Message}";
+            ErrorMessage = $"Failed to load Race Schedule Data: {ex.Message}";
         }
         finally
         {
             IsLoading = false;
         }
     }
-
-
     public string ErrorMessage
     {
         get => _errorMessage;
@@ -41,7 +42,6 @@ public class RaceScheduleViewModel : INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
-
     public bool IsLoading
     {
         get => _isLoading;
@@ -50,9 +50,7 @@ public class RaceScheduleViewModel : INotifyPropertyChanged
             _isLoading = value;
             OnPropertyChanged();
         }
-    }
-
-    public List<RaceSchedule> RaceSchedules
+    }    public List<RaceSchedule> RaceSchedules
     {
         get => _raceSchedules;
         private set
@@ -61,9 +59,7 @@ public class RaceScheduleViewModel : INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
-
     public event PropertyChangedEventHandler PropertyChanged;
-
     protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

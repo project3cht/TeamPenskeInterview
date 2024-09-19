@@ -2,6 +2,9 @@ using TeamPenskeInterview.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddScoped<RaceScheduleViewModel>();
+builder.Services.AddHttpClient<NascarDataService>();
+
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TeamPenskeInterview")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+babefdb84404d412278b9cf12171ddf2221e7389")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a294d69852d204e0d083886598ffb1c6f08e20e0")]
 [assembly: System.Reflection.AssemblyProductAttribute("TeamPenskeInterview")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TeamPenskeInterview")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
