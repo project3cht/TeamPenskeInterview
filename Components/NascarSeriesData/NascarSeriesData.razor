@@ -1,0 +1,68 @@
+@*the component will be initialized 
+var data = new nascarservice
+var data = nascarservice.async..
+
+I would have dtaa component, car year = 2020/>
+nascar series dtat, car year = 2023/>
+
+
+I would have a property involving the kind of data {seriesdata.addRange(data)]
+
+
+@code
+//code for component here
+
+use on initialize method within @code
+
+wiothin home.razor use nascar series = ""
+
+
+add styling within home.razxor and have them comnpile sidebyside*@
+
+@using System.Collections.Generic
+@inject RaceScheduleViewModel ViewModel
+
+@code {
+    [Parameter]
+    public string Year { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await ViewModel.LoadSchedules(Year);  
+    }
+}
+
+@if (ViewModel.IsLoading)
+{
+    <p>Loading...</p>
+}
+else if (!string.IsNullOrEmpty(ViewModel.ErrorMessage))  
+{
+    <p>Error: @ViewModel.ErrorMessage</p>  
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Race Name</th>
+                <th>Date</th>
+                <th>Track</th>
+                <th>Distance</th>
+                <th>Laps</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var race in ViewModel.RaceSchedules)
+            {
+                <tr>
+                    <td>@race.RaceName</td>
+                    <td>@race.RaceDate.ToShortDateString()</td>
+                    <td>@race.TrackName</td>
+                    <td>@race.ScheduleDistance</td>
+                    <td>@race.ScheduledLaps</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
