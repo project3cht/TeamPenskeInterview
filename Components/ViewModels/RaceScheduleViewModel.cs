@@ -12,6 +12,7 @@ public class RaceScheduleViewModel : INotifyPropertyChanged
 
     public async Task LoadSchedules(string year)
     {
+        //exceptions
         try
         {
             IsLoading = true;

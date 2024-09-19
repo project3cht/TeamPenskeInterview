@@ -27,3 +27,4 @@
 /Users/henry/Documents/TeamPenskeInterview/obj/Debug/net8.0/TeamPenskeInterview.pdb
 /Users/henry/Documents/TeamPenskeInterview/obj/Debug/net8.0/TeamPenskeInterview.genruntimeconfig.cache
 /Users/henry/Documents/TeamPenskeInterview/obj/Debug/net8.0/ref/TeamPenskeInterview.dll
+/Users/henry/Documents/TeamPenskeInterview/obj/Debug/net8.0/TeamPenskeInterview.sourcelink.json
