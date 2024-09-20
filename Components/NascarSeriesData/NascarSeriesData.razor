@@ -2,14 +2,14 @@
 @inject RaceScheduleViewModel ViewModel
 
 @code {
-    public string Year { get; set; } = "2024";
-    public string Series { get; set; } = "Cup Series";
+    public string Year {get; set;} = "2024";
+    public string Series {get; set;} = "Cup Series";
 
     protected override async Task OnInitializedAsync()
     {
         if (ViewModel.seriesMapping.TryGetValue(Series, out var actualSeries))
         {
-            await ViewModel.LoadAllSchedules(); // Assuming you changed to LoadAllSchedules or have a correct method name
+            await ViewModel.LoadAllSchedules();
         }
         else
         {

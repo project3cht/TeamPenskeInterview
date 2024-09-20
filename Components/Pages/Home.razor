@@ -4,7 +4,23 @@
 
 <PageTitle>Race Schedule</PageTitle>
 
-<h1>Race Schedule</h1>
+<h1>NASCAR Race Schedule</h1>
+
+<label>Select Year:</label>
+<select @bind="ViewModel.SelectedYear">
+    @for (int year = 2020; year <= DateTime.Now.Year + 1; year++)
+    {
+        <option value="@year">@year</option>
+    }
+</select>
+
+<label>Select Series:</label>
+<select @bind="ViewModel.SelectedSeries">
+    @foreach (var series in ViewModel.seriesMapping.Keys)
+    {
+        <option value="@series">@series</option>
+    }
+</select>
 
 @if (ViewModel.IsLoading)
 {
@@ -16,89 +32,44 @@ else if (!string.IsNullOrEmpty(ViewModel.ErrorMessage))
 }
 else
 {
-    <h2>Cup Series</h2>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Race Name</th>
-                <th>Date</th>
-                <th>Track</th>
-                <th>Distance</th>
-                <th>Laps</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var race in ViewModel.CupSeriesSchedules)
-            {
-                <tr>
-                    <td>@race.RaceName</td>
-                    <td>@race.RaceDate.ToShortDateString()</td>
-                    <td>@race.TrackName</td>
-                    <td>@race.ScheduleDistance</td>
-                    <td>@race.ScheduledLaps</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-
-    <h2>Xfinity Series</h2>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Race Name</th>
-                <th>Date</th>
-                <th>Track</th>
-                <th>Distance</th>
-                <th>Laps</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var race in ViewModel.XfinitySeriesSchedules)
-            {
-                <tr>
-                    <td>@race.RaceName</td>
-                    <td>@race.RaceDate.ToShortDateString()</td>
-                    <td>@race.TrackName</td>
-                    <td>@race.ScheduleDistance</td>
-                    <td>@race.ScheduledLaps</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-
-    <h2>Truck Series</h2>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Race Name</th>
-                <th>Date</th>
-                <th>Track</th>
-                <th>Distance</th>
-                <th>Laps</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var race in ViewModel.TruckSeriesSchedules)
-            {
-                <tr>
-                    <td>@race.RaceName</td>
-                    <td>@race.RaceDate.ToShortDateString()</td>
-                    <td>@race.TrackName</td>
-                    <td>@race.ScheduleDistance</td>
-                    <td>@race.ScheduledLaps</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    DisplayTable(ViewModel.CurrentSeriesSchedules);
 }
 
 @code {
-    protected override async Task OnInitializedAsync()
+    void DisplayTable(List<RaceSchedule> schedules)
     {
-        await ViewModel.LoadAllSchedules();
+        if (schedules != null && schedules.Count > 0)
+        {
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Race Name</th>
+                        <th>Date</th>
+                        <th>Track</th>
+                        <th>Distance</th>
+                        <th>Laps</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var race in schedules)
+                    {
+                        <tr>
+                            <td>@race.RaceName</td>
+                            <td>@race.RaceDate.ToShortDateString()</td>
+                            <td>@race.TrackName</td>
+                            <td>@race.ScheduleDistance</td>
+                            <td>@race.ScheduledLaps</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>No schedule available for this series.</p>
+        }
     }
 }
-
 @* <label for="yearSelect">Select Year: </label>
 <select id="yearSelect" @bind="selectedYear">
     @foreach (var year in availableYears)

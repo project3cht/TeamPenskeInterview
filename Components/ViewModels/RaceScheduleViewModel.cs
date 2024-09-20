@@ -9,35 +9,74 @@ public class RaceScheduleViewModel : INotifyPropertyChanged
 {
     private readonly NascarDataService _dataService;
     private readonly ILogger<RaceScheduleViewModel> _logger;
-    public List<RaceSchedule> CupSeriesSchedules { get; set; } = new List<RaceSchedule>();
-    public List<RaceSchedule> XfinitySeriesSchedules { get; set; } = new List<RaceSchedule>();
-    public List<RaceSchedule> TruckSeriesSchedules { get; set; } = new List<RaceSchedule>();
+    public bool IsLoading {get; set;}
+    public string ErrorMessage {get; set;} = string.Empty;
+    public List<RaceSchedule> RaceSchedule{get; set;}
+    public int SelectedYear {get; set;}
+    public List<RaceSchedule> CupSeriesSchedules {get; set;} = new List<RaceSchedule>();
+    public List<RaceSchedule> XfinitySeriesSchedules {get; set;} = new List<RaceSchedule>();
+    public List<RaceSchedule> TruckSeriesSchedules {get; set;} = new List<RaceSchedule>();
+
+    private string _selectedSeries = "Cup Series";
+    public string SelectedSeries
+    {
+        get => _selectedSeries;
+        set
+        {
+            if (_selectedSeries != value)
+            {
+                _selectedSeries = value;
+                OnPropertyChanged();
+                LoadCurrentSeriesSchedules(); // Load data for the current selected series
+            }
+        }
+    }
+    public List<RaceSchedule> CurrentSeriesSchedules { get; set; } = new List<RaceSchedule>();
+
 
     // Single instance of seriesMapping
-    public Dictionary<string, string> seriesMapping { get; private set; } = new Dictionary<string, string>
+    public Dictionary<string, string> seriesMapping = new Dictionary<string, string>
     {
         {"Cup Series", "series_1"},
         {"Xfinity Series", "series_2"},
         {"Truck Series", "series_3"}
     };
 
-    public bool IsLoading { get; set; }
-    public string ErrorMessage { get; set; }
-
     public RaceScheduleViewModel(NascarDataService dataService, ILogger<RaceScheduleViewModel> logger)
     {
         _dataService = dataService;
         _logger = logger;
+        SelectedYear = DateTime.Now.Year;
     }
 
-    public async Task LoadAllSchedules()
+    // Method to load schedules based on the selected series
+    public void LoadCurrentSeriesSchedules()
+    {
+        switch (SelectedSeries)
+        {
+            case "Cup Series":
+                CurrentSeriesSchedules = CupSeriesSchedules;
+                break;
+            case "Xfinity Series":
+                CurrentSeriesSchedules = XfinitySeriesSchedules;
+                break;
+            case "Truck Series":
+                CurrentSeriesSchedules = TruckSeriesSchedules;
+                break;
+        }
+        OnPropertyChanged(nameof(CurrentSeriesSchedules));  // Notify UI of the change
+    }
+
+        public async Task LoadAllSchedules()
     {
         IsLoading = true;
+        ErrorMessage = string.Empty;
         try
         {
-            CupSeriesSchedules = await _dataService.GetRaceSchedulesAsync("2024", seriesMapping["Cup Series"]);
-            XfinitySeriesSchedules = await _dataService.GetRaceSchedulesAsync("2024", seriesMapping["Xfinity Series"]);
-            TruckSeriesSchedules = await _dataService.GetRaceSchedulesAsync("2024", seriesMapping["Truck Series"]);
+            CupSeriesSchedules = await _dataService.GetRaceSchedulesAsync(SelectedYear, seriesMapping["Cup Series"]);
+            XfinitySeriesSchedules = await _dataService.GetRaceSchedulesAsync(SelectedYear, seriesMapping["Xfinity Series"]);
+            TruckSeriesSchedules = await _dataService.GetRaceSchedulesAsync(SelectedYear, seriesMapping["Truck Series"]);
+            LoadCurrentSeriesSchedules();
         }
         catch (Exception ex)
         {
@@ -50,14 +89,13 @@ public class RaceScheduleViewModel : INotifyPropertyChanged
         }
     }
 
-    public event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler? PropertyChanged;
     protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
+
 }
-
-
 // using System.Collections.Generic;
 // using System.Threading.Tasks;
 // using System.ComponentModel;

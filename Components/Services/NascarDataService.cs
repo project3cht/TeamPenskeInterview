@@ -14,15 +14,39 @@ public class NascarDataService
         _logger = logger;
     }
 
-    public async Task<List<RaceSchedule>> GetRaceSchedulesAsync(string year, string series)
+    public async Task<List<RaceSchedule>> GetRaceSchedulesAsync(int year, string series)
     {
-        var response = await _httpClient.GetAsync($"https://cf.nascar.com/cacher/{year}/race_list_basic.json"); 
-        response.EnsureSuccessStatusCode();
-        var jsonResponse = await response.Content.ReadAsStringAsync();
-        //Console.WriteLine(jsonResponse);
-        
-        var json = JsonSerializer.Deserialize<Dictionary<string, List<RaceSchedule>>>(jsonResponse);
-        var RaceSchedules = json[series];
-        return RaceSchedules;
+        try
+        {
+            string apiUrl = $"https://cf.nascar.com/cacher/{year}/race_list_basic.json";
+            _logger.LogInformation($"Fetching race schedule for year: {year} from {apiUrl}");
+
+            var response = await _httpClient.GetAsync(apiUrl);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadAsStringAsync();
+                var raceSeriesDict = JsonSerializer.Deserialize<Dictionary<string, List<RaceSchedule>>>(json);
+                if (raceSeriesDict != null && raceSeriesDict.ContainsKey(series))
+                {
+                    return raceSeriesDict[series];
+                }
+                else
+                {
+                    _logger.LogWarning($"No races found for series: {series}");
+                }
+            }
+            else
+            {
+                _logger.LogError($"Failed to fetch race schedule for {year}. Status Code: {response.StatusCode}");
+                return new List<RaceSchedule>();
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error fetching race schedule");
+            return new List<RaceSchedule>();
+        }
+        return new List<RaceSchedule>();
     }
 }
