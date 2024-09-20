@@ -1,14 +1,58 @@
 ﻿@page "/"
-
 @using TeamPenskeInterview.Components
-
 @inject RaceScheduleViewModel ViewModel
 
-<PageTitle>Race Sechedule</PageTitle>
+<PageTitle>Race Schedule</PageTitle>
 
 <h1>Race Schedule</h1>
 
-<label for="yearSelect">Select Year: </label>
+@if (ViewModel.IsLoading)
+{
+    <p><em>Loading Race Schedule...</em></p>
+}
+else if (!string.IsNullOrEmpty(ViewModel.ErrorMessage))
+{
+    <p>Error: @ViewModel.ErrorMessage</p>
+}
+else
+{
+    <h2>Cup Series</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Race Name</th>
+                <th>Date</th>
+                <th>Track</th>
+                <th>Distance</th>
+                <th>Laps</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var race in ViewModel.CupSeriesSchedules)
+            {
+                <tr>
+                    <td>@race.RaceName</td>
+                    <td>@race.RaceDate.ToShortDateString()</td>
+                    <td>@race.TrackName</td>
+                    <td>@race.ScheduleDistance</td>
+                    <td>@race.ScheduledLaps</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h2>Xfinity Series</h2>
+    <!-- Repeat the table structure for Xfinity and Truck series -->
+}
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await ViewModel.LoadAllSchedules();
+    }
+}
+
+@* <label for="yearSelect">Select Year: </label>
 <select id="yearSelect" @bind="selectedYear">
     @foreach (var year in availableYears)
     {
@@ -24,9 +68,9 @@
     }
 </select>
 
-<button @onclick="OnSelectionChanged">Load Race Schedule</button>
+<button @onclick="OnSelectionChanged">Load Race Schedule</button> *@
 
-@if (ViewModel.IsLoading)
+@* @if (ViewModel.IsLoading)
 {
     <p><em>Loading Race Schedule...</em></p>
 }
@@ -36,61 +80,131 @@ else if (!string.IsNullOrEmpty(ViewModel.ErrorMessage))
 }
 else
 {
-   <table class="table">
-        <thead>
-            <tr>
-                <th>SeriesID</th>
-                <th>RaceName</th>
-                <th>Date</th>
-                <th>Track</th>
-                <th>Distance</th>
-                <th>Laps</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var race in ViewModel.RaceSchedules)
-            {
-                <tr>
-                    <td>@race.SeriesId</td>
-                    <td>@race.RaceName</td>
-                    <td>@race.RaceDate.ToShortDateString()</td>
-                    <td>@race.TrackName</td>
-                    <td>@race.ScheduleDistance</td>
-                    <td>@race.ScheduledLaps</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <h2>Cup Series</h2>
+    DisplaySeriesTable(ViewModel.CupSeriesSchedules);
+    <h2>Xfinity Series</h2>
+    DisplaySeriesTable(ViewModel.XfinitySeriesSchedules);
+    <h2>Truck Series</h2>
+    DisplaySeriesTable(ViewModel.TruckSeriesSchedules);
 }
 
 @code {
-    private string selectedYear = DateTime.Now.Year.ToString();
-    private string selectedSeries = "Cup Series"; //used as a default selection
-    private List<string> availableYears = new() { "2022", "2023", "2024" };
-    //private List<string> availableSeries = new() { "series_1", "series_2", "series_3" };
-
-    private async Task OnSelectionChanged()
-    {
-        Console.WriteLine($"Selected Series: {selectedSeries}"); 
-        var actualSeries = ViewModel.seriesMapping[selectedSeries];
-        await ViewModel.LoadSchedules(selectedYear, actualSeries);    }
     protected override async Task OnInitializedAsync()
     {
-        // Load schedules for the requested year
-        await ViewModel.LoadSchedules(selectedYear, ViewModel.seriesMapping[selectedSeries]);
+        await ViewModel.LoadAllSchedules();
     }
+
+    void DisplaySeriesTable(List<RaceSchedule> schedules)
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Race Name</th>
+                    <th>Date</th>
+                    <th>Track</th>
+                    <th>Distance</th>
+                    <th>Laps</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var race in schedules)
+                {
+                    <tr>
+                        <td>@race.RaceName</td>
+                        <td>@race.RaceDate.ToShortDateString()</td>
+                        <td>@race.TrackName</td>
+                        <td>@race.ScheduleDistance</td>
+                        <td>@race.ScheduledLaps</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}@if (ViewModel.IsLoading)
+{
+    <p><em>Loading Race Schedule...</em></p>
+}
+else if (!string.IsNullOrEmpty(ViewModel.ErrorMessage))
+{
+    <p>Error: @ViewModel.ErrorMessage</p>
+}
+else
+{
+    DisplaySeriesTable("Cup Series", ViewModel.CupSeriesSchedules);
+    DisplaySeriesTable("Xfinity Series", ViewModel.XfinitySeriesSchedules);
+    DisplaySeriesTable("Truck Series", ViewModel.TruckSeriesSchedules);
 }
 
-@*
-// catch only the exception I am worried about
-// have t heui response in a easy way
-// only catch the exceptions
-    they all inherit from exception
+@code {
+    private string _selectedYear = DateTime.Now.Year.ToString();
+    private string _selectedSeries = "Cup Series";
+    private List<string> availableYears = new List<string>();
+    public string selectedYear
+    {
+        get => _selectedYear;
+        set {
+            if (_selectedYear != value) {
+                _selectedYear = value;
+                OnParameterChange();
+            }
+        }
+    }
+    public string selectedSeries {
+        get => _selectedSeries;
+        set {
+            if (_selectedSeries != value) {
+                _selectedSeries = value;
+                OnParameterChange();
+            }
+        }
+    }
 
-catch everything and logg the exception errors
-    failed to load data
-menu back button compared to the browser back button
-
-!!catch argument exception!!
-
-*@
+    
+    private async Task OnSelectionChanged()
+    {
+        Console.WriteLine($"Loading data for Year: {selectedYear}, Series: {selectedSeries}");
+        await ViewModel.LoadSchedules(selectedYear, ViewModel.seriesMapping[selectedSeries]);   
+        StateHasChanged();
+    }
+    private async Task OnParameterChange() {
+        await ViewModel.LoadSchedules(selectedYear, 
+        ViewModel.seriesMapping[selectedSeries]);
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        
+        await ViewModel.LoadAllSchedules();
+    }
+    void DisplaySeriesTable(string seriesName, List<RaceSchedule> schedules)
+    {
+        <h2>@seriesName</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Race Name</th>
+                    <th>Date</th>
+                    <th>Track</th>
+                    <th>Distance</th>
+                    <th>Laps</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var race in schedules)
+                {
+                    <tr>
+                        <td>@race.RaceName</td>
+                        <td>@race.RaceDate.ToShortDateString()</td>
+                        <td>@race.TrackName</td>
+                        <td>@race.ScheduleDistance</td>
+                        <td>@race.ScheduledLaps</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    
+    private async Task<List<string>> FetchAvailableYears()
+    {
+        return new List<string> {"2021", "2022", "2023", "2024"};
+    }
+} *@

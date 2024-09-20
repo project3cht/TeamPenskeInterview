@@ -11,6 +11,7 @@
 /Users/henry/Documents/TeamPenskeInterview/obj/Debug/net8.0/TeamPenskeInterview.AssemblyInfo.cs
 /Users/henry/Documents/TeamPenskeInterview/obj/Debug/net8.0/TeamPenskeInterview.csproj.CoreCompileInputs.cache
 /Users/henry/Documents/TeamPenskeInterview/obj/Debug/net8.0/TeamPenskeInterview.MvcApplicationPartsAssemblyInfo.cache
+/Users/henry/Documents/TeamPenskeInterview/obj/Debug/net8.0/TeamPenskeInterview.sourcelink.json
 /Users/henry/Documents/TeamPenskeInterview/obj/Debug/net8.0/staticwebassets.build.json
 /Users/henry/Documents/TeamPenskeInterview/obj/Debug/net8.0/staticwebassets.development.json
 /Users/henry/Documents/TeamPenskeInterview/obj/Debug/net8.0/staticwebassets/msbuild.TeamPenskeInterview.Microsoft.AspNetCore.StaticWebAssets.props
@@ -27,4 +28,3 @@
 /Users/henry/Documents/TeamPenskeInterview/obj/Debug/net8.0/TeamPenskeInterview.pdb
 /Users/henry/Documents/TeamPenskeInterview/obj/Debug/net8.0/TeamPenskeInterview.genruntimeconfig.cache
 /Users/henry/Documents/TeamPenskeInterview/obj/Debug/net8.0/ref/TeamPenskeInterview.dll
-/Users/henry/Documents/TeamPenskeInterview/obj/Debug/net8.0/TeamPenskeInterview.sourcelink.json

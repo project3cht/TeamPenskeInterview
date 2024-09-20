@@ -2,13 +2,34 @@
 @inject RaceScheduleViewModel ViewModel
 
 @code {
+    public string Year { get; set; } = "2024";
+    public string Series { get; set; } = "Cup Series";
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (ViewModel.seriesMapping.TryGetValue(Series, out var actualSeries))
+        {
+            await ViewModel.LoadAllSchedules(); // Assuming you changed to LoadAllSchedules or have a correct method name
+        }
+        else
+        {
+            ViewModel.ErrorMessage = "Incomplete Data for Series Selection";
+        }
+    }
+}
+
+@* @using System.Collections.Generic
+@inject RaceScheduleViewModel ViewModel
+
+@code {
     public string Year {get; set;}
     public string Series {get; set;}
-    public string selectedSeries {get; set;} = "Cup Series"; //Default selection
+    public string selectedSeries {get; set;}
 
     protected override async Task OnParametersSetAsync()
     {
-        if (ViewModel.seriesMapping.TryGetValue(Series, out string actualSeries))
+        string actualSeries;
+        if (ViewModel.seriesMapping.TryGetValue(Series, out actualSeries))
         {
             await ViewModel.LoadSchedules(Year, actualSeries);
         }
@@ -17,7 +38,6 @@
             ViewModel.SetError("Incomplete Data for Series Selection");
         }
     }
-
 }
 
 @if (ViewModel.IsLoading)
@@ -55,25 +75,4 @@ else
             }
         </tbody>
     </table>
-}
-
-@*the component will be initialized 
-var data = new nascarservice
-var data = nascarservice.async..
-
-I would have dtaa component, car year = 2020/>
-nascar series dtat, car year = 2023/>
-
-
-I would have a property involving the kind of data {seriesdata.addRange(data)]
-
-
-@code
-//code for component here
-
-use on initialize method within @code
-
-wiothin home.razor use nascar series = ""
-
-
-add styling within home.razxor and have them comnpile sidebyside*@
+} *@
