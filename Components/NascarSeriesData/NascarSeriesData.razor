@@ -1,34 +1,23 @@
-@*the component will be initialized 
-var data = new nascarservice
-var data = nascarservice.async..
-
-I would have dtaa component, car year = 2020/>
-nascar series dtat, car year = 2023/>
-
-
-I would have a property involving the kind of data {seriesdata.addRange(data)]
-
-
-@code
-//code for component here
-
-use on initialize method within @code
-
-wiothin home.razor use nascar series = ""
-
-
-add styling within home.razxor and have them comnpile sidebyside*@
-
 @using System.Collections.Generic
 @inject RaceScheduleViewModel ViewModel
 
 @code {
-    public string Year { get; set; }
+    public string Year {get; set;}
+    public string Series {get; set;}
+    public string selectedSeries {get; set;} = "Cup Series"; //Default selection
 
     protected override async Task OnParametersSetAsync()
     {
-        await ViewModel.LoadSchedules(Year);  
+        if (ViewModel.seriesMapping.TryGetValue(Series, out string actualSeries))
+        {
+            await ViewModel.LoadSchedules(Year, actualSeries);
+        }
+        else
+        {
+            ViewModel.SetError("Incomplete Data for Series Selection");
+        }
     }
+
 }
 
 @if (ViewModel.IsLoading)
@@ -67,3 +56,24 @@ else
         </tbody>
     </table>
 }
+
+@*the component will be initialized 
+var data = new nascarservice
+var data = nascarservice.async..
+
+I would have dtaa component, car year = 2020/>
+nascar series dtat, car year = 2023/>
+
+
+I would have a property involving the kind of data {seriesdata.addRange(data)]
+
+
+@code
+//code for component here
+
+use on initialize method within @code
+
+wiothin home.razor use nascar series = ""
+
+
+add styling within home.razxor and have them comnpile sidebyside*@

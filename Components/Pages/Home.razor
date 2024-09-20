@@ -7,13 +7,24 @@
 <PageTitle>Race Sechedule</PageTitle>
 
 <h1>Race Schedule</h1>
-@code {
-    protected override async Task OnInitializedAsync()
+
+<label for="yearSelect">Select Year: </label>
+<select id="yearSelect" @bind="selectedYear">
+    @foreach (var year in availableYears)
     {
-        // Load schedules for the requested year
-        await ViewModel.LoadSchedules(DateTime.Now.Year.ToString());  
+        <option value="@year">@year</option>
     }
-}
+</select>
+
+<label for="seriesSelect">Select Series: </label>
+<select id="seriesSelect" @bind="selectedSeries">
+    @foreach (var series in ViewModel.seriesMapping.Keys)
+    {
+        <option value="@series">@series</option>
+    }
+</select>
+
+<button @onclick="OnSelectionChanged">Load Race Schedule</button>
 
 @if (ViewModel.IsLoading)
 {
@@ -25,20 +36,22 @@ else if (!string.IsNullOrEmpty(ViewModel.ErrorMessage))
 }
 else
 {
-    <table class="table">
-        <thread>
+   <table class="table">
+        <thead>
             <tr>
-                <th>Race Name</th>
+                <th>SeriesID</th>
+                <th>RaceName</th>
                 <th>Date</th>
                 <th>Track</th>
                 <th>Distance</th>
                 <th>Laps</th>
             </tr>
-        </thread>
+        </thead>
         <tbody>
             @foreach (var race in ViewModel.RaceSchedules)
             {
                 <tr>
+                    <td>@race.SeriesId</td>
                     <td>@race.RaceName</td>
                     <td>@race.RaceDate.ToShortDateString()</td>
                     <td>@race.TrackName</td>
@@ -48,6 +61,24 @@ else
             }
         </tbody>
     </table>
+}
+
+@code {
+    private string selectedYear = DateTime.Now.Year.ToString();
+    private string selectedSeries = "Cup Series"; //used as a default selection
+    private List<string> availableYears = new() { "2022", "2023", "2024" };
+    //private List<string> availableSeries = new() { "series_1", "series_2", "series_3" };
+
+    private async Task OnSelectionChanged()
+    {
+        Console.WriteLine($"Selected Series: {selectedSeries}"); 
+        var actualSeries = ViewModel.seriesMapping[selectedSeries];
+        await ViewModel.LoadSchedules(selectedYear, actualSeries);    }
+    protected override async Task OnInitializedAsync()
+    {
+        // Load schedules for the requested year
+        await ViewModel.LoadSchedules(selectedYear, ViewModel.seriesMapping[selectedSeries]);
+    }
 }
 
 @*
