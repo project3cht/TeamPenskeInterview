@@ -41,6 +41,9 @@ NASCAR-Race-Schedule-Viewer/
 │       └── app.css
 └── Program.cs
 
+Microsoft C# dev kit was used to provide me with an intial blazor applicaiton set up. 
+`https://github.com/CommunityToolkit/MVVM-Samples.git` was used as a refernce to other open-source project files. This was useful to better understand the MVVM design structure. The null-coalescing operator '??' and nullable value types gretaly helped me work through various edge cases. 
+
 ## System Requirments
 
 -   .NET 6.0 SDK or later
