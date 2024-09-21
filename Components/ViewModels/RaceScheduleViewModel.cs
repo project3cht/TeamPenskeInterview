@@ -2,39 +2,25 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text.Json;
 using Microsoft.Extensions.Logging;
 
 public class RaceScheduleViewModel : INotifyPropertyChanged
 {
     private readonly NascarDataService _dataService;
     private readonly ILogger<RaceScheduleViewModel> _logger;
-    public bool IsLoading {get; set;}
-    public string ErrorMessage {get; set;} = string.Empty;
-    public List<RaceSchedule> RaceSchedule{get; set;}
-    public int SelectedYear {get; set;}
-    public List<RaceSchedule> CupSeriesSchedules {get; set;} = new List<RaceSchedule>();
-    public List<RaceSchedule> XfinitySeriesSchedules {get; set;} = new List<RaceSchedule>();
-    public List<RaceSchedule> TruckSeriesSchedules {get; set;} = new List<RaceSchedule>();
 
-    private string _selectedSeries = "Cup Series";
-    public string SelectedSeries
-    {
-        get => _selectedSeries;
-        set
-        {
-            if (_selectedSeries != value)
-            {
-                _selectedSeries = value;
-                OnPropertyChanged();
-                LoadCurrentSeriesSchedules(); // Load data for the current selected series
-            }
-        }
-    }
-    public List<RaceSchedule> CurrentSeriesSchedules { get; set; } = new List<RaceSchedule>();
+    public bool IsLoading { get; set; }
+    public string? ErrorMessage { get; set; }
 
+    // Selected year
+    public int SelectedYear { get; set; }
+    public List<int> AvailableYears { get; set; } = new List<int>();
 
-    // Single instance of seriesMapping
+    // Race schedules
+    public List<RaceSchedule> CupSeriesSchedules { get; set; } = new List<RaceSchedule>();
+    public List<RaceSchedule> XfinitySeriesSchedules { get; set; } = new List<RaceSchedule>();
+    public List<RaceSchedule> TruckSeriesSchedules { get; set; } = new List<RaceSchedule>();
+
     public Dictionary<string, string> seriesMapping = new Dictionary<string, string>
     {
         {"Cup Series", "series_1"},
@@ -46,55 +32,64 @@ public class RaceScheduleViewModel : INotifyPropertyChanged
     {
         _dataService = dataService;
         _logger = logger;
-        SelectedYear = DateTime.Now.Year;
+        SelectedYear = DateTime.Now.Year;  // Default to current year
+        ErrorMessage = string.Empty;
     }
 
-    // Method to load schedules based on the selected series
-    public void LoadCurrentSeriesSchedules()
-    {
-        switch (SelectedSeries)
-        {
-            case "Cup Series":
-                CurrentSeriesSchedules = CupSeriesSchedules;
-                break;
-            case "Xfinity Series":
-                CurrentSeriesSchedules = XfinitySeriesSchedules;
-                break;
-            case "Truck Series":
-                CurrentSeriesSchedules = TruckSeriesSchedules;
-                break;
-        }
-        OnPropertyChanged(nameof(CurrentSeriesSchedules));  // Notify UI of the change
-    }
-
-        public async Task LoadAllSchedules()
+    // Load schedules for all series
+    public async Task LoadAllSchedules()
     {
         IsLoading = true;
         ErrorMessage = string.Empty;
+
         try
         {
-            CupSeriesSchedules = await _dataService.GetRaceSchedulesAsync(SelectedYear, seriesMapping["Cup Series"]);
-            XfinitySeriesSchedules = await _dataService.GetRaceSchedulesAsync(SelectedYear, seriesMapping["Xfinity Series"]);
-            TruckSeriesSchedules = await _dataService.GetRaceSchedulesAsync(SelectedYear, seriesMapping["Truck Series"]);
-            LoadCurrentSeriesSchedules();
+            CupSeriesSchedules = await _dataService.GetRaceSchedulesAsync(SelectedYear, "cup");
+            XfinitySeriesSchedules = await _dataService.GetRaceSchedulesAsync(SelectedYear, "xfinity");
+            TruckSeriesSchedules = await _dataService.GetRaceSchedulesAsync(SelectedYear, "truck");
         }
         catch (Exception ex)
         {
-            ErrorMessage = "Failed to load data: " + ex.Message;
-            _logger.LogError(ex, "Failed to load schedules.");
+            _logger.LogError(ex, "Error loading race schedules");
+            ErrorMessage = "Failed to load race schedules.";
         }
         finally
         {
             IsLoading = false;
+            OnPropertyChanged(nameof(CupSeriesSchedules));
+            OnPropertyChanged(nameof(XfinitySeriesSchedules));
+            OnPropertyChanged(nameof(TruckSeriesSchedules));
         }
     }
 
+    // Load available years for a series
+    public async Task LoadAvailableYears(string series)
+    {
+        IsLoading = true;
+        ErrorMessage = string.Empty;
+
+        try
+        {
+            AvailableYears = await _dataService.GetAvailableYearsAsync(series);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error loading available years");
+            ErrorMessage = "Failed to load available years.";
+        }
+        finally
+        {
+            IsLoading = false;
+            OnPropertyChanged(nameof(AvailableYears));
+        }
+    }
+
+    // INotifyPropertyChanged implementation
     public event PropertyChangedEventHandler? PropertyChanged;
-    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+    protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
-
 }
 // using System.Collections.Generic;
 // using System.Threading.Tasks;

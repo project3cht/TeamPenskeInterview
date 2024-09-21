@@ -21,8 +21,7 @@ public class RaceSchedule
 }
 public class RaceSeries
 {
-    public List<RaceSchedule> Races { get; set; } = new List<RaceSchedule>();
-}
+    public List<RaceSchedule> RaceSchedule { get; set; } = new List<RaceSchedule>();}
 public class ParentObject
 {
     [JsonPropertyName("series")]

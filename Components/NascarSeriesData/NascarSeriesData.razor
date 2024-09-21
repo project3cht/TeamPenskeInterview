@@ -2,8 +2,8 @@
 @inject RaceScheduleViewModel ViewModel
 
 @code {
-    public string Year {get; set;} = "2024";
-    public string Series {get; set;} = "Cup Series";
+    public string Year {get; set;} = string.Empty;
+    public string Series {get; set;} = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
