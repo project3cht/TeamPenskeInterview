@@ -9,17 +9,17 @@ public class RaceScheduleViewModel : INotifyPropertyChanged
     private readonly NascarDataService _dataService;
     private readonly ILogger<RaceScheduleViewModel> _logger;
 
-    public bool IsLoading { get; set; }
-    public string? ErrorMessage { get; set; }
+    public bool IsLoading {get; set;}
+    public string? ErrorMessage {get; set;}
 
     // Selected year
-    public int SelectedYear { get; set; }
-    public List<int> AvailableYears { get; set; } = new List<int>();
+    public int SelectedYear {get; set;}
+    public List<int> AvailableYears {get; set;} = new List<int>();
 
     // Race schedules
-    public List<RaceSchedule> CupSeriesSchedules { get; set; } = new List<RaceSchedule>();
-    public List<RaceSchedule> XfinitySeriesSchedules { get; set; } = new List<RaceSchedule>();
-    public List<RaceSchedule> TruckSeriesSchedules { get; set; } = new List<RaceSchedule>();
+    public List<RaceSchedule> CupSeriesSchedules {get; set;} = new List<RaceSchedule>();
+    public List<RaceSchedule> XfinitySeriesSchedules {get; set;} = new List<RaceSchedule>();
+    public List<RaceSchedule> TruckSeriesSchedules {get; set;} = new List<RaceSchedule>();
 
     public Dictionary<string, string> seriesMapping = new Dictionary<string, string>
     {
@@ -44,9 +44,9 @@ public class RaceScheduleViewModel : INotifyPropertyChanged
 
         try
         {
-            CupSeriesSchedules = await _dataService.GetRaceSchedulesAsync(SelectedYear, "cup");
-            XfinitySeriesSchedules = await _dataService.GetRaceSchedulesAsync(SelectedYear, "xfinity");
-            TruckSeriesSchedules = await _dataService.GetRaceSchedulesAsync(SelectedYear, "truck");
+            CupSeriesSchedules = await _dataService.GetRaceSchedulesAsync(SelectedYear, "Cup Series");
+            XfinitySeriesSchedules = await _dataService.GetRaceSchedulesAsync(SelectedYear, "Xfinity Series");
+            TruckSeriesSchedules = await _dataService.GetRaceSchedulesAsync(SelectedYear, "Truck Series");
         }
         catch (Exception ex)
         {
@@ -84,7 +84,6 @@ public class RaceScheduleViewModel : INotifyPropertyChanged
         }
     }
 
-    // INotifyPropertyChanged implementation
     public event PropertyChangedEventHandler? PropertyChanged;
     protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
