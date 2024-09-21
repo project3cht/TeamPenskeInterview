@@ -5,7 +5,6 @@
 
 @if (ViewModel.AvailableYears?.Any() == true)
 {
-    <!-- Year Dropdown -->
     <select @bind="ViewModel.SelectedYear">
         @foreach (var year in ViewModel.AvailableYears)
         {
@@ -17,9 +16,19 @@ else
 {
     <p>Loading available years...</p>
 }
- <!-- Reload Button -->
-    <button @onclick="ReloadData">Reload</button>
-<!-- Loading Indicator -->
+
+<!-- Updated Reload Button -->
+<button @onclick="ReloadData" disabled="@ViewModel.IsLoading">
+    @if (ViewModel.IsLoading)
+    {
+        <span>Reloading...</span>
+    }
+    else
+    {
+        <span>Reload</span>
+    }
+</button>
+
 @if (ViewModel.IsLoading)
 {
     <p>Loading schedules...</p>
@@ -77,7 +86,6 @@ else
     {
         await ViewModel.LoadAllSchedules();
     }
-
     // Reusable function to display the race schedules table
     RenderFragment DisplaySeriesTable(string seriesName, List<RaceSchedule> schedules) => @<table class="table table-striped">
         <thead>
@@ -102,6 +110,7 @@ else
             }
         </tbody>
     </table>;
+
 }
 
 @* <label for="yearSelect">Select Year: </label>

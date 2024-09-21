@@ -10,7 +10,21 @@ public class RaceScheduleViewModel : INotifyPropertyChanged
     private readonly ILogger<RaceScheduleViewModel> _logger;
     public bool IsLoading {get; set;}
     public string? ErrorMessage {get; set;}
-    public int SelectedYear {get; set;}
+    private int _selectedYear;
+    public int SelectedYear
+    {
+        get => _selectedYear;
+        set
+        {
+            if (_selectedYear != value)
+            {
+                _selectedYear = value;
+                OnPropertyChanged(nameof(SelectedYear));
+                _ = LoadAllSchedules(); // Reload schedules when year changes
+            }
+        }
+    }
+    
     public List<int> AvailableYears {get; set;} = new List<int>();
     public List<RaceSchedule> CupSeriesSchedules {get; set;} = new List<RaceSchedule>();
     public List<RaceSchedule> XfinitySeriesSchedules {get; set;} = new List<RaceSchedule>();
@@ -29,9 +43,18 @@ public class RaceScheduleViewModel : INotifyPropertyChanged
     {
         _dataService = dataService;
         _logger = logger;
-        SelectedYear = DateTime.Now.Year;  // Default to current year
+        _ = InitializeAsync(); // Start async initialization
     }
 
+    private async Task InitializeAsync()
+    {
+        await LoadAvailableYears("series_1"); // Load years for Cup Series
+        if (AvailableYears.Any())
+        {
+            SelectedYear = AvailableYears.Max(); // Set to most recent year
+        }
+        await LoadAllSchedules();
+    }
     // Load schedules for all series
     public async Task LoadAllSchedules()
     {

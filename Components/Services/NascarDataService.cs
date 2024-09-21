@@ -77,20 +77,27 @@ public class NascarDataService
     public async Task<List<int>> GetAvailableYearsAsync(string series)
     {
         var availableYears = new List<int>();
-        for (int year = 1900; year <= 2024; year++)
+        int currentYear = DateTime.Now.Year;
+        int startYear = currentYear - 5; // Check 5 years back
+        int endYear = currentYear + 1;   // Check up to next year
+
+        for (int year = startYear; year <= endYear; year++)
         {
-            var schedules = await GetRaceSchedulesAsync(year, series);
-            if (schedules.Count > 0)
+            try
             {
-                availableYears.Add(year);
-                _logger.LogInformation($"Found schedules for year: {year}");
+                var schedules = await GetRaceSchedulesAsync(year, series);
+                if (schedules.Count > 0)
+                {
+                    availableYears.Add(year);
+                    _logger.LogInformation($"Found schedules for year: {year}");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                _logger.LogWarning($"No schedules found for year: {year}");
+                _logger.LogWarning($"Error checking year {year}: {ex.Message}");
             }
         }
 
-        return availableYears;
+        return availableYears.OrderByDescending(y => y).ToList(); // Return years in descending order
     }
 }
