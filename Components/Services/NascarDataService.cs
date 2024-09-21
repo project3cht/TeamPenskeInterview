@@ -14,8 +14,7 @@ public class NascarDataService
         _logger = logger;
     }
 
-    // Method to fetch the race schedules for a specific year and series
-    public async Task<List<RaceSchedule>?> GetRaceSchedulesAsync(int year, string series)
+    public async Task<List<RaceSchedule>> GetRaceSchedulesAsync(int year, string series)
     {
         try
         {
@@ -27,20 +26,31 @@ public class NascarDataService
             if (response.IsSuccessStatusCode)
             {
                 var json = await response.Content.ReadAsStringAsync();
+                _logger.LogDebug($"Received JSON: {json}");
+
                 var parentObject = JsonSerializer.Deserialize<ParentObject>(json);
-                if (parentObject != null && parentObject.Series.ContainsKey(series))
+
+                if (parentObject != null)
                 {
-                    return parentObject.Series[series].RaceSchedule;
+                    List<RaceSchedule> raceSchedules = series switch
+                    {
+                        "series_1" => parentObject.CupSeries ?? new List<RaceSchedule>(),
+                        "series_2" => parentObject.XfinitySeries ?? new List<RaceSchedule>(),
+                        "series_3" => parentObject.TruckSeries ?? new List<RaceSchedule>(),
+                        _ => new List<RaceSchedule>()
+                    };
+
+                    _logger.LogInformation($"Found {raceSchedules.Count} races for series: {series}");
+                    return raceSchedules;
                 }
                 else
                 {
-                    _logger.LogWarning($"No races found for series: {series}");
+                    _logger.LogWarning("Deserialized ParentObject is null");
                 }
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
                 _logger.LogWarning($"No data found for year {year}");
-                return null;  // No data for this year
             }
             else
             {
@@ -52,10 +62,9 @@ public class NascarDataService
             _logger.LogError(ex, "Error fetching race schedule");
         }
 
-        return null;
+        return new List<RaceSchedule>();
     }
 
-    // Method to fetch available years by testing which years have data
     public async Task<List<int>> GetAvailableYearsAsync(string series, int startYear = 2020, int endYear = 2025)
     {
         var availableYears = new List<int>();
@@ -63,7 +72,7 @@ public class NascarDataService
         for (int year = startYear; year <= endYear; year++)
         {
             var schedules = await GetRaceSchedulesAsync(year, series);
-            if (schedules != null && schedules.Count > 0)
+            if (schedules.Count > 0)
             {
                 availableYears.Add(year);
                 _logger.LogInformation($"Found schedules for year: {year}");

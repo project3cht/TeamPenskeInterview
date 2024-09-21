@@ -33,7 +33,6 @@ public class RaceScheduleViewModel : INotifyPropertyChanged
         _dataService = dataService;
         _logger = logger;
         SelectedYear = DateTime.Now.Year;  // Default to current year
-        ErrorMessage = string.Empty;
     }
 
     // Load schedules for all series
@@ -44,9 +43,9 @@ public class RaceScheduleViewModel : INotifyPropertyChanged
 
         try
         {
-            CupSeriesSchedules = await _dataService.GetRaceSchedulesAsync(SelectedYear, "Cup Series");
-            XfinitySeriesSchedules = await _dataService.GetRaceSchedulesAsync(SelectedYear, "Xfinity Series");
-            TruckSeriesSchedules = await _dataService.GetRaceSchedulesAsync(SelectedYear, "Truck Series");
+            CupSeriesSchedules = await _dataService.GetRaceSchedulesAsync(SelectedYear, "series_1");
+            XfinitySeriesSchedules = await _dataService.GetRaceSchedulesAsync(SelectedYear, "series_2");
+            TruckSeriesSchedules = await _dataService.GetRaceSchedulesAsync(SelectedYear, "series_3");
         }
         catch (Exception ex)
         {
@@ -56,9 +55,9 @@ public class RaceScheduleViewModel : INotifyPropertyChanged
         finally
         {
             IsLoading = false;
-            OnPropertyChanged(nameof(CupSeriesSchedules));
-            OnPropertyChanged(nameof(XfinitySeriesSchedules));
-            OnPropertyChanged(nameof(TruckSeriesSchedules));
+            // OnPropertyChanged(nameof(CupSeriesSchedules));
+            // OnPropertyChanged(nameof(XfinitySeriesSchedules));
+            // OnPropertyChanged(nameof(TruckSeriesSchedules));
         }
     }
 

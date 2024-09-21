@@ -21,9 +21,15 @@ public class RaceSchedule
 }
 public class RaceSeries
 {
-    public List<RaceSchedule> RaceSchedule { get; set; } = new List<RaceSchedule>();}
+    public List<RaceSchedule> RaceSchedule {get; set;} = new List<RaceSchedule>();}
 public class ParentObject
 {
-    [JsonPropertyName("series")]
-    public Dictionary<string, RaceSeries> Series { get; set; } = new Dictionary<string, RaceSeries>();
+ [JsonPropertyName("series_1")]
+    public List<RaceSchedule> CupSeries {get; set;} = new List<RaceSchedule>();
+
+    [JsonPropertyName("series_2")]
+    public List<RaceSchedule> XfinitySeries {get; set;} = new List<RaceSchedule>();
+
+    [JsonPropertyName("series_3")]
+    public List<RaceSchedule> TruckSeries {get; set;} = new List<RaceSchedule>();
 }
