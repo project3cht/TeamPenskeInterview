@@ -56,9 +56,9 @@ NASCAR-Race-Schedule-Viewer/
  -if on Mac, the folder will be in your downloads directory
 -   `cd Downloads/TeamPensekInterview` 
 3. Restore project packages
-- `cd botnet restore`
+- `cd dotnet restore`
 4. Build the project
-- `botnet build` - if that did not work, try `botnet clean` then re run `botnet build`
+- `dotnet build` - if that did not work, try `dotnet clean` then re run `dotnet build`
 5. Run the application
 - `dotnet watch`
 
