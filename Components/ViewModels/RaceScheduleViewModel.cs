@@ -8,19 +8,15 @@ public class RaceScheduleViewModel : INotifyPropertyChanged
 {
     private readonly NascarDataService _dataService;
     private readonly ILogger<RaceScheduleViewModel> _logger;
-
     public bool IsLoading {get; set;}
     public string? ErrorMessage {get; set;}
-
-    // Selected year
     public int SelectedYear {get; set;}
     public List<int> AvailableYears {get; set;} = new List<int>();
-
-    // Race schedules
     public List<RaceSchedule> CupSeriesSchedules {get; set;} = new List<RaceSchedule>();
     public List<RaceSchedule> XfinitySeriesSchedules {get; set;} = new List<RaceSchedule>();
     public List<RaceSchedule> TruckSeriesSchedules {get; set;} = new List<RaceSchedule>();
 
+    //Mapping is used to match series names to the API identifier
     public Dictionary<string, string> seriesMapping = new Dictionary<string, string>
     {
         {"Cup Series", "series_1"},
@@ -28,6 +24,7 @@ public class RaceScheduleViewModel : INotifyPropertyChanged
         {"Truck Series", "series_3"}
     };
 
+    //Initializes data service and logger
     public RaceScheduleViewModel(NascarDataService dataService, ILogger<RaceScheduleViewModel> logger)
     {
         _dataService = dataService;
@@ -55,9 +52,9 @@ public class RaceScheduleViewModel : INotifyPropertyChanged
         finally
         {
             IsLoading = false;
-            // OnPropertyChanged(nameof(CupSeriesSchedules));
-            // OnPropertyChanged(nameof(XfinitySeriesSchedules));
-            // OnPropertyChanged(nameof(TruckSeriesSchedules));
+            OnPropertyChanged(nameof(CupSeriesSchedules));
+            OnPropertyChanged(nameof(XfinitySeriesSchedules));
+            OnPropertyChanged(nameof(TruckSeriesSchedules));
         }
     }
 

@@ -1,7 +1,7 @@
 ﻿@page "/"
 @inject RaceScheduleViewModel ViewModel
 
-<h3>Select a Year</h3>
+<h3>Race Schedules</h3>
 
 @if (ViewModel.AvailableYears?.Any() == true)
 {
@@ -12,15 +12,13 @@
             <option value="@year">@year</option>
         }
     </select>
-
-    <!-- Reload Button -->
-    <button @onclick="ReloadData">Reload</button>
 }
 else
 {
     <p>Loading available years...</p>
 }
-
+ <!-- Reload Button -->
+    <button @onclick="ReloadData">Reload</button>
 <!-- Loading Indicator -->
 @if (ViewModel.IsLoading)
 {
@@ -68,8 +66,10 @@ else
     // Load schedules and available years when the component is initialized
     protected override async Task OnInitializedAsync()
     {
-        await ViewModel.LoadAvailableYears("cup");  // Load available years for the Cup Series
-        await ViewModel.LoadAllSchedules();    // Load schedules based on default selected year
+        // Load available years for the Cup Series
+        await ViewModel.LoadAvailableYears("cup");  
+        // Load schedules based on default selected year
+        await ViewModel.LoadAllSchedules();    
     }
 
     // Method to reload data

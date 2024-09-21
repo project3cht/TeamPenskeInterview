@@ -7,12 +7,15 @@
 
     protected override async Task OnInitializedAsync()
     {
+        //validate if the selected series exists in dictionare
         if (ViewModel.seriesMapping.TryGetValue(Series, out var actualSeries))
         {
+            //if selected series is valid in dictionary, load schedules
             await ViewModel.LoadAllSchedules();
         }
         else
         {
+            //if selected series is not valid in dictionary, set error message
             ViewModel.ErrorMessage = "Incomplete Data for Series Selection";
         }
     }
