@@ -108,6 +108,7 @@ The application uses the built-in .NET logging framework. Logs are generated for
 ## Future Enhancements
 
 - Have the program properly fetch available years
+- Have the reload button funtion as intended
 - Add more detailed Race Information
 - Implement sorting functionality across all data colunms
 - Instead of having all three schedules on one page, have each race schedule have their own tab/page
