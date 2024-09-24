@@ -1,11 +1,13 @@
 ﻿@page "/"
+@rendermode InteractiveServer
 @inject RaceScheduleViewModel ViewModel
 
 <h3>Race Schedules</h3>
 
+<!-- Forcing a the page to reload when a new year is selected -->
 @if (ViewModel.AvailableYears?.Any() == true)
 {
-    <select @bind="ViewModel.SelectedYear">
+    <select @bind="ViewModel.SelectedYear" @bind:after="ReloadData">
         @foreach (var year in ViewModel.AvailableYears)
         {
             <option value="@year">@year</option>
@@ -18,7 +20,7 @@ else
 }
 
 <!-- Updated Reload Button -->
-<button @onclick="ReloadData" disabled="@ViewModel.IsLoading">
+@* <button @onclick="ReloadData" disabled="@ViewModel.IsLoading">
     @if (ViewModel.IsLoading)
     {
         <span>Reloading...</span>
@@ -27,7 +29,7 @@ else
     {
         <span>Reload</span>
     }
-</button>
+</button> *@
 
 @if (ViewModel.IsLoading)
 {
@@ -76,7 +78,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         // Load available years for the Cup Series
-        await ViewModel.LoadAvailableYears("cup");  
+        await ViewModel.LoadAvailableYears("series_1");  
         // Load schedules based on default selected year
         await ViewModel.LoadAllSchedules();    
     }

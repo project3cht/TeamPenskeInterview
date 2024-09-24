@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/henry/Documents/work/JobApplications/InterviewProjects:Assessments/TeamPenskeInterview/TeamPenskeInterview.csproj",
+      "projectUniqueName": "/Users/henry/Documents/TeamPenskeInterview/TeamPenskeInterview.csproj",
       "projectName": "TeamPenskeInterview",
-      "projectPath": "/Users/henry/Documents/work/JobApplications/InterviewProjects:Assessments/TeamPenskeInterview/TeamPenskeInterview.csproj",
+      "projectPath": "/Users/henry/Documents/TeamPenskeInterview/TeamPenskeInterview.csproj",
       "packagesPath": "/Users/henry/.nuget/packages/",
-      "outputPath": "/Users/henry/Documents/work/JobApplications/InterviewProjects:Assessments/TeamPenskeInterview/obj/",
+      "outputPath": "/Users/henry/Documents/TeamPenskeInterview/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/henry/.nuget/NuGet/NuGet.Config"
